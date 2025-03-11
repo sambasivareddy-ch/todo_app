@@ -65,3 +65,10 @@
 .todo-list li input:checked + label {
     text-decoration: line-through;
 }
+
+@media screen and (max-width: 768px) {
+    .main {
+        width: 90%;
+    }
+}
+

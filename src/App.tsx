@@ -1,4 +1,4 @@
-import { useState } from 'react';
+import { useEffect, useState } from 'react';
 
 import TodoType from './models/todo_type';
 import AddTodoForm from './components/AddTodoForm';
@@ -10,25 +10,52 @@ function App() {
   const [todos, setTodos] = useState<TodoType[]>([]);
   const [completedTodos, setCompletedTodos] = useState<TodoType[]>([]);
 
+  useEffect(() => {
+    const yetToDone: string | null = localStorage.getItem('yettodone');
+    if (yetToDone) {
+      setTodos(JSON.parse(yetToDone));
+    } 
+  }, []);
+
+  useEffect(() => {
+    const completed: string | null = localStorage.getItem('completed');
+    if (completed) {
+      setCompletedTodos(JSON.parse(completed))
+    }
+  }, [])
+
   const addToTodoListHandler = (text: string) => {
     const newTodo = new TodoType(text);
-    setTodos((prev) => [...prev, newTodo])
+    localStorage.setItem('yettodone', JSON.stringify([...todos, newTodo]));
+    setTodos((prev) => [...prev, newTodo]);
   }
 
   const removeTodoHandler = (id: string) => {
     const toBeRemoved = todos.find((todo) => todo.id === id);
+
     if (toBeRemoved) {
-      setCompletedTodos((prev) => [toBeRemoved, ...prev]);
+      const newCompletedTodos = [toBeRemoved, ...completedTodos]
+      localStorage.setItem('completed', JSON.stringify(newCompletedTodos));
+      setCompletedTodos(newCompletedTodos);
     }
-    setTodos(todos.filter((todo) => todo.id !== id));
+
+    const remainingTodos: TodoType[] = todos.filter((todo) => todo.id !== id);
+    localStorage.setItem('yettodone', JSON.stringify(remainingTodos));
+    setTodos(remainingTodos);
   }
 
   const reEnterTodoHandler = (id: string) => {
     const toBeEnter = completedTodos.find((completedTodo) => completedTodo.id === id);
+
     if (toBeEnter) {
-      setTodos((prev) => [...prev, toBeEnter]);
+      const newTodos: TodoType[] = [...todos, toBeEnter];
+      localStorage.setItem('yettodone', JSON.stringify(newTodos));
+      setTodos(newTodos);
     }
-    setCompletedTodos(completedTodos.filter((todo) => todo.id !== id));
+
+    const modifiedCompletedTodos: TodoType[] = completedTodos.filter((todo) => todo.id !== id);
+    localStorage.setItem('completed', JSON.stringify(modifiedCompletedTodos));
+    setCompletedTodos(modifiedCompletedTodos);
   }
 
   return (

@@ -66,9 +66,15 @@
     text-decoration: line-through;
 }
 
-@media screen and (max-width: 768px) {
-    .main {
-        width: 90%;
-    }
+.todo-list li button {
+    outline: none;
+    background: none;
+    border: none;
+    align-self: center;
+    cursor: pointer;
+    color:#9f8c60;
 }
 
+.todo-list li button:hover {
+    transform: scale(0.9);
+}

@@ -58,13 +58,24 @@ function App() {
     setCompletedTodos(modifiedCompletedTodos);
   }
 
+  const deleteTodoHandler = (id: string) => {
+    const remainingTodos: TodoType[] = todos.filter((todo) => todo.id !== id);
+    localStorage.setItem('yettodone', JSON.stringify(remainingTodos));
+    
+    const modifiedCompletedTodos: TodoType[] = completedTodos.filter((todo) => todo.id !== id);
+    localStorage.setItem('completed', JSON.stringify(modifiedCompletedTodos));
+
+    setTodos(remainingTodos);
+    setCompletedTodos(modifiedCompletedTodos);
+  }
+
   return (
     <div className={styles['main-wrapper']}>
       <div className={styles['main']}>
         <AddTodoForm addToTodoList={addToTodoListHandler} />
-        <TodoList items={todos} removeHandler={removeTodoHandler} />
+        <TodoList items={todos} removeHandler={removeTodoHandler} deleteHandler={deleteTodoHandler}/>
         <hr></hr>
-        <CompletedTodoList items={completedTodos} reEnterHandler={reEnterTodoHandler} />
+        <CompletedTodoList items={completedTodos} reEnterHandler={reEnterTodoHandler} deleteTodoHandler={deleteTodoHandler}/>
       </div>
     </div>
   )
